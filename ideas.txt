@@ -1,2 +1,5 @@
 Get-NetIPAddress -AddressFamily ipv6 -AddressState Preferred -PrefixOrigin RouterAdvertisement -SuffixOrigin link
 
+$ip = Invoke-RestMethod http://ipinfo.io/json | Select -exp ip
+
+
