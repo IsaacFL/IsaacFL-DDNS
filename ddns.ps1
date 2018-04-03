@@ -13,3 +13,4 @@ write-host "IP6 " $ip6.ipaddress
 $URL = "https://www.duckdns.org/update?domains=" + $hostname + "&token=" + $token + "&ip=" + $ip4 + "&ipv6=" + $ip6.ipaddress
 $result = Invoke-RestMethod $URL -Credential $credential
 "Server Response: " + $result
+pause
