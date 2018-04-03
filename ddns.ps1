@@ -13,7 +13,7 @@ $secpasswd = ConvertTo-SecureString $pass -AsPlainText -Force
 $credential = New-Object System.Management.Automation.PSCredential($user, $secpasswd)
 
 
-# Get IP4 First
+# Update IP4
 $ipPub = $ip4
 
 # Output
@@ -23,7 +23,7 @@ $result = Invoke-RestMethod $URL -Credential $credential
 "Server Response: " + $result
 
 
-# Get IP6 First
+# Update IP6
 $ipPub = $ip6.ipaddress
 
 # Output
