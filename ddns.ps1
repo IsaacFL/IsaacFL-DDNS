@@ -5,22 +5,21 @@ $Password = "7X5SPwl0xQlMJqaA"
 $ip4 = Invoke-RestMethod http://ipinfo.io/json | Select -exp ip
 $ip6 = Get-NetIPAddress -AddressFamily ipv6 -AddressState Preferred -PrefixOrigin RouterAdvertisement -SuffixOrigin link
 
- write-host $UserName, $Password, $HostName, $ip4, $ip6
-  pause
-  
     
-  $webRequestURI = "https://" + $UserName + ":" + $Password + "@domains.google.com/nic/update&" + "hostname=" + $HostName + "&myip=" + $ip4
-  
-  write-host $webRequestURI
-  
-	pause
-	
  
+$URL = "https://{0}:{1}@domains.google.com/nic/update?hostname={2}&myip={3}" -F $UserName, $Password, $HostName, $ip6
 
-  $response = Invoke-WebRequest -uri $webRequestURI <# -Method Post #>
+write-host $URL
+Write-host "Sending update request to Google DNS..."
+
+$Response = Invoke-WebRequest $URL
+    $Result = $Response.Content
+    $StatusCode = $Response.StatusCode
+
+write-host $Result, $StatusCode
+pause
     
-  $Result = $Response.Content
-  $StatusCode = $Response.StatusCode
+
     switch ($Result) {
       "good*" { 
         $splitResult = $Result.split(" ")
