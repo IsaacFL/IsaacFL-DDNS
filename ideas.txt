@@ -3,6 +3,9 @@ Get-NetIPAddress -AddressFamily ipv6 -AddressState Preferred -PrefixOrigin Route
 $ip4 = Invoke-RestMethod http://ipinfo.io/json | Select -exp ip
 
 
+# Get Current Authoratative IP For DynDNS Hostname
+$NS = (Resolve-DnsName $hostname -Server 8.8.8.8 -Type NS).PrimaryServer
+$ipCurrent = (Resolve-DnsName $hostname -Server $NS -Type A).IPAddress
 
 
 ----------------------------------------------
