@@ -24,6 +24,10 @@ $URL = "https://www.duckdns.org/update?domains=" + $hostname + "&token=" + $toke
 $result = Invoke-RestMethod $URL -Credential $credential
 "Server Response: " + $result
 }
-else { write-host "No Change" }
+else { 
+	write-host "No Change"
+	write-host "Current IP4 " $onlineip4
+	write-host "Current IP6 " $onlineip6
+	}
 
 pause
