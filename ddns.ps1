@@ -6,7 +6,7 @@ $fqdn = $hostname + ".psp.iznmort.com"
 
 # Get Current IP Addresses
 $ip4 = Invoke-RestMethod http://ipinfo.io/json | Select -exp ip
-$ip6 = (Resolve-DnsName $fqdn -Server "192.168.1.1" -Type AAAA).IPAddress
+$ip6 = (Resolve-DnsName $fqdn -Type AAAA).IPAddress
 $onlineip6 = (Resolve-DnsName $fqdn -Server "8.8.8.8" -Type AAAA).IPAddress
 $onlineip4 = (Resolve-DnsName $fqdn -Server "8.8.8.8" -Type A).IPAddress
 
