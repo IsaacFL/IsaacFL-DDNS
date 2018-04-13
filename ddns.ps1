@@ -6,7 +6,11 @@ $fqdn = $hostname + ".psp.iznmort.com"
 
 # Get Current IP Addresses
 $ip4 = Invoke-RestMethod http://ipinfo.io/json | Select -exp ip
-$ip6 = (Resolve-DnsName $fqdn -Type AAAA).IPAddress
+# $ip6 = (Resolve-DnsName $fqdn -Type AAAA).IPAddress
+
+$ip6 = ( Get-NetIPAddress | Where-Object { $_.SuffixOrigin -eq 'Link' } | Where-Object { $_.prefixorigin -eq 'RouterAdvertisement' } | Where-Object { $_.AddressFamily -eq 'IPv6' } ).IPAddress
+
+
 $onlineip6 = (Resolve-DnsName $fqdn -Server "8.8.8.8" -Type AAAA).IPAddress
 $onlineip4 = (Resolve-DnsName $fqdn -Server "8.8.8.8" -Type A).IPAddress
 
