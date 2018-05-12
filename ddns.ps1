@@ -12,8 +12,8 @@ $ip6 = (Resolve-DnsName $fqdn -Type AAAA).IPAddress
 $ip6 = ( Get-NetIPAddress | Where-Object { $_.SuffixOrigin -eq 'Link' } | Where-Object { $_.prefixorigin -eq 'RouterAdvertisement' } | Where-Object { $_.AddressFamily -eq 'IPv6' } ).IPAddress
 #>
 
-$onlineip6 = (Resolve-DnsName $fqdn -Server "8.8.8.8" -Type AAAA).IPAddress
-$onlineip4 = (Resolve-DnsName $fqdn -Server "8.8.8.8" -Type A).IPAddress
+$onlineip6 = (Resolve-DnsName $fqdn -Server "1.1.1.1" -Type AAAA).IPAddress
+$onlineip4 = (Resolve-DnsName $fqdn -Server "1.1.1.1" -Type A).IPAddress
 
 $Change = 0
 if ($ip4 -ne $onlineip4) { $Change = $Change + 1 }
