@@ -2,18 +2,19 @@
 $hostname  = "isaacfl"
 $token  = "0ee3b92c-97f6-4555-9e1e-b5483e18ebc6"
 
-$fqdn = $hostname + ".psp.iznmort.com"
+$fqdn = $hostname + ".duckdns.org"
 
 # Get Current IP Addresses
 $ip4 = Invoke-RestMethod http://ipinfo.io/json | Select -exp ip
-$ip6 = (Resolve-DnsName $fqdn -Type AAAA).IPAddress
-
 <#
-$ip6 = ( Get-NetIPAddress | Where-Object { $_.SuffixOrigin -eq 'Link' } | Where-Object { $_.prefixorigin -eq 'RouterAdvertisement' } | Where-Object { $_.AddressFamily -eq 'IPv6' } ).IPAddress
+$ip6 = (Resolve-DnsName $fqdn -Type AAAA).IPAddress
 #>
 
-$onlineip6 = (Resolve-DnsName $fqdn -Server "1.1.1.1" -Type AAAA).IPAddress
-$onlineip4 = (Resolve-DnsName $fqdn -Server "1.1.1.1" -Type A).IPAddress
+
+$ip6 = ( Get-NetIPAddress | Where-Object { $_.SuffixOrigin -eq 'Link' } | Where-Object { $_.prefixorigin -eq 'RouterAdvertisement' } | Where-Object { $_.AddressFamily -eq 'IPv6' } ).IPAddress
+
+$onlineip6 = (Resolve-DnsName $fqdn -Type AAAA).IPAddress
+$onlineip4 = (Resolve-DnsName $fqdn -Type A).IPAddress
 
 $Change = 0
 if ($ip4 -ne $onlineip4) { $Change = $Change + 1 }
