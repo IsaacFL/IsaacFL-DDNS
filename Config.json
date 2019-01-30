@@ -1,0 +1,9 @@
+{
+    "auth_email": "user@example.com",
+    "auth_key": "cloudflare auth_key",
+    "zone_name": "example.com",
+    "records": [
+        "example.com",
+        "www.example.com"
+    ]
+}
