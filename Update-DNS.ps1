@@ -1,10 +1,13 @@
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
+$extDNS = "2606:4700:4700::1111"
+
+
 # File Name
-$File_IP="$PSScriptRoot\IP.txt"
-$File_IDS="$PSScriptRoot\Cloudflare.ids"
-$File_LOG="$PSScriptRoot\Cloudflare.log"
-$File_Config="$PSScriptRoot\Config.json"
+$PSWorking="M:\Software\PSWorking"
+$File_LOG="$PSWorking\Cloudflare.log"
+$File_Config="$PSWorking\Config.json"
+
 $DATE=Get-Date -Format g
 $Config = (Get-Content -Path $File_Config -Raw) | ConvertFrom-Json
 $Header = @{"X-Auth-Email" = $Config.auth_email; "X-Auth-Key" = $Config.auth_key; "Content-Type" = "application/json" }
@@ -15,40 +18,38 @@ function Write-Log {
     Add-Content -Path $File_LOG -Value ($DATE + ", " + $Text)
 }
 
-Write-Log "Check Initiated"
 
-$IP = Invoke-RestMethod -Uri "http://ipv4.icanhazip.com"
-$IP = $IP.Trim()
+$Uri = "https://api.cloudflare.com/client/v4/zones?name=" + $Config.zone_name
+$Response = Invoke-RestMethod -Uri $Uri -Headers $Header
+$Zone_Identifier = $Response.result[0].id
 
-if (Test-Path $File_IP)
-{
-    $IP_Old = Get-Content $File_IP
-    $IP_Old = $IP_Old.Trim()
-    if ($IP -eq $IP_Old)
-    {
-        Write-Log "IP does not change, Quitting."
-        Exit
-    }
-}
-
-if (-NOT ($IP -match '^([0-9]{1,3}\.){3}[0-9]{1,3}$'))
-{
-    Write-Log "Fetched IP does not valid! Quitting."
-    Exit
-}
-
-Set-Content -Path $File_IP -Value $IP
-
-if (Test-Path $File_IDS)
-{
-    $Zone_Identifier = Get-Content -Path $File_IDS | Out-String
-} else {
-    $Uri = "https://api.cloudflare.com/client/v4/zones?name=" + $Config.zone_name
-    $Response = Invoke-RestMethod -Uri $Uri -Headers $Header
-    $Zone_Identifier = $Response.result[0].id
-    Set-Content -Path $File_IDS -Value $Zone_Identifier
-}
 $Zone_Identifier = $Zone_Identifier.Trim()
+
+$Config.records | ForEach-Object {
+    $Record_Name = $_
+
+     # Resolve Current IP Address Locally
+    $IP = (Resolve-DnsName $Record_Name -Type AAAA).IPAddress
+    # Resolve Current IP Address Externally
+    $onlineip = (Resolve-DnsName $Record_Name -Type AAAA -Server $extDNS ).IPAddress
+
+    Write-Log ($Record_Name + " Local IP " + $IP)
+    Write-Log ($Record_Name + " External IP " + $onlineip)
+
+
+    if ($IP -ne $onlineip) {
+        $Message = $Record_Name + " Updating Host to: " + $IP
+        Write-Log $Message
+        $Uri = "https://api.cloudflare.com/client/v4/zones/" + $Zone_Identifier + "/dns_records?name=" + $Record_Name
+        Write-Log $URI
+        }
+    else {
+        $Message = $Record_NAme + " No Change: " + $onlineip
+        Write-Log $Message
+        }
+}
+
+<#
 
 $Config.records | ForEach-Object {
     $Record_Name = $_
@@ -75,3 +76,5 @@ $Config.records | ForEach-Object {
 
 $Message = "IP changed to " + $IP
 Write-Log $Message
+
+#>
