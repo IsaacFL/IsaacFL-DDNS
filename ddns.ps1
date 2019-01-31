@@ -1,4 +1,7 @@
-﻿<#
+﻿[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
+
+<#
 Dynamic DNS - Cloudflare
 ipv6 only as ipv4 will be done via pfsense
 #>
