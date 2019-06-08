@@ -29,7 +29,7 @@ $Config.records | ForEach-Object {
     $Record_Name = $_
 
     # Resolve Current IP Address Locally
-    $IP = (Resolve-DnsName $Record_Name -Type AAAA).IPAddress
+    $IP = ( Get-NetIPAddress -addressfamily ipv6 -SuffixOrigin link ).IPAddress[1]
 
     # Resolve Current IP Address Externally
     $onlineip = (Resolve-DnsName $Record_Name -Type AAAA -Server $extDNS ).IPAddress
