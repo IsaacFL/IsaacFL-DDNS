@@ -1,7 +1,5 @@
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
-$extDNS = "2606:4700:4700::1111"
-
 
 # File Name
 $PSWorking="M:\Software\PSWorking"
@@ -25,12 +23,12 @@ function Write-Log {
 do {
 #	Start-Sleep -Seconds 1
 #    Write-Log ( "Testing Network Connection")
-	$ping = test-netconnection -InformationLevel Quiet
+	$ping = test-netconnection -ComputerName "one.one.one.one" -InformationLevel Quiet
   } until ($ping)
 
 
 
-
+$extDNS = ( Resolve-DnsName -Name one.one.one.one -Type AAAA ).IPAddress[1]
 $Uri = "https://api.cloudflare.com/client/v4/zones?name=" + $Config.zone_name
 $Response = Invoke-RestMethod -Uri $Uri -Headers $Header
 $Zone_Identifier = $Response.result[0].id
