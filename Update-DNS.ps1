@@ -8,6 +8,18 @@ $PSWorking="M:\Software\PSWorking"
 $File_LOG="$PSWorking\Cloudflare.log"
 $File_Config="$PSWorking\Config.json"
 
+
+
+
+
+#Wait for network
+do {
+	Start-Sleep -Seconds 1
+    Write-Host "Ping " $extDNS
+	$ping = test-connection $extDNS -count 1 -Quiet
+  } until ($ping)
+
+
 $DATE=Get-Date -Format g
 $Config = (Get-Content -Path $File_Config -Raw) | ConvertFrom-Json
 $Header = @{"X-Auth-Email" = $Config.auth_email; "X-Auth-Key" = $Config.auth_key; "Content-Type" = "application/json" }
@@ -18,28 +30,22 @@ function Write-Log {
     Add-Content -Path $File_LOG -Value ($DATE + ", " + $Text)
 }
 
-
 $Uri = "https://api.cloudflare.com/client/v4/zones?name=" + $Config.zone_name
 $Response = Invoke-RestMethod -Uri $Uri -Headers $Header
 $Zone_Identifier = $Response.result[0].id
 
 $Zone_Identifier = $Zone_Identifier.Trim()
 
-# Time to get it all together
 
 $Config.records | ForEach-Object {
     $Record_Name = $_
 
-    # Resolve Current IP Address Locally
-    $IP = ( Get-NetIPAddress -addressfamily ipv6 -SuffixOrigin link ).IPAddress[1]
-
-	# Time to get it all together
-    Start-Sleep -Seconds 5
-
-
     # Resolve Current IP Address Externally
     $onlineip = (Resolve-DnsName $Record_Name -Type AAAA -Server $extDNS ).IPAddress
 
+
+    # Resolve Current IP Address Locally
+    $IP = ( Get-NetIPAddress -addressfamily ipv6 -SuffixOrigin link ).IPAddress[1]
 
     $Uri = "https://api.cloudflare.com/client/v4/zones/" + $Zone_Identifier + "/dns_records?name=" + $Record_Name
     $Response = Invoke-RestMethod -Uri $Uri -Headers $Header
