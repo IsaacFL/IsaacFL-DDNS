@@ -23,8 +23,8 @@ function Write-Log {
 
 #Wait for network
 do {
-	Start-Sleep -Seconds 1
-    Write-Log ( "Testing Network Connection")
+#	Start-Sleep -Seconds 1
+#    Write-Log ( "Testing Network Connection")
 	$ping = test-netconnection -InformationLevel Quiet
   } until ($ping)
 
