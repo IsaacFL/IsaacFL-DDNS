@@ -27,7 +27,7 @@ $Zone_Identifier = $Zone_Identifier.Trim()
 
 # Time to get it all together
 
-Start-Sleep -Seconds 2 
+Start-Sleep -Seconds 3 
 
 $Config.records | ForEach-Object {
     $Record_Name = $_
