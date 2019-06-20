@@ -27,13 +27,15 @@ $Zone_Identifier = $Zone_Identifier.Trim()
 
 # Time to get it all together
 
-Start-Sleep -Seconds 3 
-
 $Config.records | ForEach-Object {
     $Record_Name = $_
 
     # Resolve Current IP Address Locally
     $IP = ( Get-NetIPAddress -addressfamily ipv6 -SuffixOrigin link ).IPAddress[1]
+
+	# Time to get it all together
+    Start-Sleep -Seconds 5
+
 
     # Resolve Current IP Address Externally
     $onlineip = (Resolve-DnsName $Record_Name -Type AAAA -Server $extDNS ).IPAddress
