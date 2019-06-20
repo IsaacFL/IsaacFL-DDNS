@@ -10,25 +10,26 @@ $File_Config="$PSWorking\Config.json"
 
 
 
-
-
-#Wait for network
-do {
-	Start-Sleep -Seconds 1
-    Write-Host "Ping " $extDNS
-	$ping = test-connection $extDNS -count 1 -Quiet
-  } until ($ping)
-
-
-$DATE=Get-Date -Format g
 $Config = (Get-Content -Path $File_Config -Raw) | ConvertFrom-Json
 $Header = @{"X-Auth-Email" = $Config.auth_email; "X-Auth-Key" = $Config.auth_key; "Content-Type" = "application/json" }
 
 function Write-Log {
     Param ($Text)
+    $DATE=Get-Date -Format g
     Write-Host $Text
     Add-Content -Path $File_LOG -Value ($DATE + ", " + $Text)
 }
+
+
+#Wait for network
+do {
+	Start-Sleep -Seconds 1
+    Write-Log ( "Pinging " + $extDNS)
+	$ping = test-connection $extDNS -count 1 -Quiet
+  } until ($ping)
+
+
+
 
 $Uri = "https://api.cloudflare.com/client/v4/zones?name=" + $Config.zone_name
 $Response = Invoke-RestMethod -Uri $Uri -Headers $Header
