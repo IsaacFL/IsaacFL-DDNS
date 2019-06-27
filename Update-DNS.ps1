@@ -20,6 +20,8 @@ function Write-Log {
 
 
 #Wait for network
+Start-Sleep -Seconds 1
+
 do {
 #	Start-Sleep -Seconds 1
 #    Write-Log ( "Testing Network Connection")
