@@ -25,7 +25,7 @@ Start-Sleep -Seconds 1
 do {
 #	Start-Sleep -Seconds 1
 #    Write-Log ( "Testing Network Connection")
-	$ping = test-netconnection -ComputerName "one.one.one.one" -InformationLevel Quiet
+	$ping = test-netconnection -InformationLevel Quiet
   } until ($ping)
 
 
