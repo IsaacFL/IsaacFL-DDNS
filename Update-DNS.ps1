@@ -20,12 +20,10 @@ function Write-Log {
 
 
 #Wait for network
-Start-Sleep -Seconds 1
 
 do {
-#	Start-Sleep -Seconds 1
-#    Write-Log ( "Testing Network Connection")
-	$ping = test-netconnection -InformationLevel Quiet
+    Start-Sleep -Seconds 1
+	$ping = test-netconnection -ComputerName 2606:4700:4700::1111 -InformationLevel Quiet
   } until ($ping)
 
 
